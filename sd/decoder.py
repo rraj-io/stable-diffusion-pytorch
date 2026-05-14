@@ -3,7 +3,7 @@ from typing import Any
 import torch
 from torch import nn
 from torch.nn import functional as F
-from sd.attention import SelfAttention 
+from attention import SelfAttention 
 
 class VAE_AttentionBlock(nn.Module):
 
@@ -37,7 +37,7 @@ class VAE_AttentionBlock(nn.Module):
 
         return x
 
-class VAE_ResidualBlaock(nn.Module):
+class VAE_ResidualBlock(nn.Module):
 
     def __init__(self, in_channels, out_channels):
         super().__init__()
@@ -76,45 +76,45 @@ class VAE_Decoder(nn.Sequential):
 
             nn.Conv2d(4, 512, kernel_size=3, padding=1),
 
-            VAE_ResidualBlaock(512, 512),
+            VAE_ResidualBlock(512, 512),
 
             VAE_AttentionBlock(512),
 
-            VAE_ResidualBlaock(512, 512),
+            VAE_ResidualBlock(512, 512),
 
-            VAE_ResidualBlaock(512, 512),
+            VAE_ResidualBlock(512, 512),
 
-            VAE_ResidualBlaock(512, 512),
+            VAE_ResidualBlock(512, 512),
 
             # (Batch_size, 512, height / 8, width / 8) -> (Batch_size, 512, height / 8, width / 8)
-            VAE_ResidualBlaock(512, 512),
+            VAE_ResidualBlock(512, 512),
 
             # (Batch_size, 512, height / 8, width / 8) -> (Batch_size, 512, height / 4, width / 4)
             nn.Upsample(scale_factor=2),
 
             nn.Conv2d(512, 512, kernel_size=3, padding=1),
 
-            VAE_ResidualBlaock(512, 512),
-            VAE_ResidualBlaock(512, 512),
-            VAE_ResidualBlaock(512, 512),
+            VAE_ResidualBlock(512, 512),
+            VAE_ResidualBlock(512, 512),
+            VAE_ResidualBlock(512, 512),
 
             # (Batch_size, 512, height / 4, width / 4) -> (Batch_size, 512, height / 2, width / 2   )
             nn.Upsample(scale_factor=2),
 
             nn.Conv2d(512, 512, kernel_size=3, padding=1),
 
-            VAE_ResidualBlaock(512, 256),
-            VAE_ResidualBlaock(512, 256),
-            VAE_ResidualBlaock(512, 256),
+            VAE_ResidualBlock(512, 256),
+            VAE_ResidualBlock(512, 256),
+            VAE_ResidualBlock(512, 256),
 
             # (Batch_size, 256, height / 2, width / 2) -> (Batch_size, 256, height, width)
             nn.Upsample(scale_factor=2),
 
             nn.Conv2d(256, 256, kernel_size=3, padding=1),
 
-            VAE_ResidualBlaock(256, 128),
-            VAE_ResidualBlaock(128, 128),
-            VAE_ResidualBlaock(128, 128),
+            VAE_ResidualBlock(256, 128),
+            VAE_ResidualBlock(128, 128),
+            VAE_ResidualBlock(128, 128),
 
             nn.GroupNorm(32, 128),
             nn.SiLU(),
