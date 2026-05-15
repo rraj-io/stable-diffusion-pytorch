@@ -1,4 +1,4 @@
-mport torch
+import torch
 
 def load_from_standard_weights(input_file: str, device: str) -> dict[str, torch.Tensor]:
     # Taken from: https://github.com/kjsman/stable-diffusion-pytorch/issues/7#issuecomment-1426839447
