@@ -42,11 +42,11 @@ class CLIPLayer(nn.Module):
         x += residual
 
         ## Feed forward layer
-        residual += x
+        residual = x
         x = self.layernorm_2(x)
         x = self.linear_1(x)
 
-        x = x* torch.sigmoid(1.702 + x) # QuickGELU activation fuinction
+        x = x * torch.sigmoid(1.702 * x) # QuickGELU activation fuinction
         x = self.linear_2(x)
         x += residual
 
@@ -55,10 +55,11 @@ class CLIPLayer(nn.Module):
 class CLIP(nn.Module):
 
     def __init__(self):
+        super().__init__()
         
         self.embedding = CLIPEmbedding(49408, 768, 77)
 
-        self.layers = nn.Module([
+        self.layers = nn.ModuleList([
             CLIPLayer(12, 768) for i in range(12)
         ])
 

@@ -27,13 +27,13 @@ def generate(prompt: str,
             raise ValueError("Strength should be in (0, 1]")
         
         if idle_device:
-            to_idle: lambda x: x.to(idle_device)
+            to_idle = lambda x: x.to(idle_device)
         else:
             to_idle = lambda x: x
 
         generator = torch.Generator(device=device)
         if seed is None:
-            generate.seed()
+            generator.seed()
         else:
             generator.manual_seed(seed)
         
@@ -67,7 +67,7 @@ def generate(prompt: str,
 
         if sampler_name == "ddpm":
             sampler = DDPMSampler(generator)
-            sampler.set_inference_steps(n_inference_steps)
+            sampler.set_inference_timesteps(n_inference_steps)
         else:
             raise ValueError(f"Sampler {sampler_name} not supported")
         
@@ -92,7 +92,7 @@ def generate(prompt: str,
             latents = encoder(input_image_tensor, encoder_noise)
 
             sampler.set_strength(strength=strength)
-            latents = sampler.add_noise(latents, sampler.timestep[0])
+            latents = sampler.add_noise(latents, sampler.timesteps[0])
 
             to_idle(encoder)
         else:

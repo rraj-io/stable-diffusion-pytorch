@@ -26,7 +26,7 @@ class VAE_Encoder(nn.Sequential):
             VAE_ResidualBlock(256, 256),
 
             # (Batch_size, 256, Height / 2, Width / 2) -> (Batch_size, 256, Height / 4, Width / 4)
-            nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=0),
+            nn.Conv2d(256, 256, kernel_size=3, stride=2, padding=0),
 
             # (Batch_size, 256, Height / 4, Width / 4) -> (Batch_size, 512, Height / 4, Width / 4)
             VAE_ResidualBlock(256, 512),
